@@ -11,13 +11,17 @@ struct ColorVisualizer: App {
     let color: Color
 
     init() {
-        let command = try! ColorVisualizerBase.parseAsRoot() as! ColorVisualizerBase
-        // Using a small `Color` extension from `@MarcoEidinger`
-        // https://blog.eidinger.info/from-hex-to-color-and-back-in-swiftui
-        guard let color = Color(hex: command.hex) else {
-            fatalError("😢 \(command.hex) is not a valid hex colour")
+        do {
+            let command = try ColorVisualizerBase.parseAsRoot() as! ColorVisualizerBase
+            // Using a small `Color` extension from `@MarcoEidinger`
+            // https://blog.eidinger.info/from-hex-to-color-and-back-in-swiftui
+            guard let color = Color(hex: command.hex) else {
+                fatalError("😢 \(command.hex) is not a valid hex colour")
+            }
+            self.color = color
+        } catch {
+            ColorVisualizerBase.exit(withError: error)
         }
-        self.color = color
     }
     
     var body: some Scene {
